@@ -14,6 +14,7 @@ func StartServer() *gin.Engine {
 	router.GET("/books", controllers.GetBook)
 	router.GET("/book/:bookID", controllers.GetBookById)
 	router.PUT("/book/:bookID", controllers.UpdateBook)
+	router.DELETE("/book/:bookID", controllers.DeleteBook)
 
 	return router
 }

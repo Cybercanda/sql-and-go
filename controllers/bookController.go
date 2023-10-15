@@ -145,6 +145,22 @@ func UpdateBook(ctx *gin.Context) {
 	})
 }
 
+// Menghapus Buku
+func DeleteBook(ctx *gin.Context) {
+	id := ctx.Param("bookID")
+
+	_, err := db.Exec("DELETE FROM books WHERE id=$1", id)
+
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("Book with ID %v has been successfully deleted", id),
+	})
+}
+
 // Mengambil semua buku
 //func getBooks(c *gin.Context) {
 //	rows, err := db.Query("SELECT * FROM books")
