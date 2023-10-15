@@ -11,6 +11,7 @@ func StartServer() *gin.Engine {
 	router := gin.Default()
 
 	router.POST("/books", controllers.AddBook)
+	router.GET("/books", controllers.GetBook)
 
 	return router
 }

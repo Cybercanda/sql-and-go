@@ -63,6 +63,37 @@ func AddBook(ctx *gin.Context) {
 	})
 }
 
+// Mengambil Semua data Buku
+func GetBook(ctx *gin.Context) {
+	rows, err := db.Query("SELECT * FROM books")
+	if err != nil {
+		log.Fatal(err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"Error": "Internal Server Error",
+		})
+		return
+	}
+	defer rows.Close()
+
+	var books []Book
+	for rows.Next() {
+		var book Book
+		err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Description)
+
+		if err != nil {
+			log.Fatal(err)
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Internal Server Error",
+			})
+			return
+		}
+		books = append(books, book)
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"books": books,
+	})
+}
+
 // Mengambil semua buku
 //func getBooks(c *gin.Context) {
 //	rows, err := db.Query("SELECT * FROM books")
