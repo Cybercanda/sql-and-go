@@ -122,6 +122,29 @@ func GetBookById(ctx *gin.Context) {
 	})
 }
 
+// Update Buku berdasarkan ID
+func UpdateBook(ctx *gin.Context) {
+	id := ctx.Param("bookID")
+	var updateBook Book
+
+	if err := ctx.ShouldBindJSON(&updateBook); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	_, err := db.Exec("UPDATE books SET title=$1, author=$2, description=$3 WHERE id=$4",
+		updateBook.Title, updateBook.Author, updateBook.Description, id)
+
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("Book with ID %v has been successfully updated", id),
+	})
+}
+
 // Mengambil semua buku
 //func getBooks(c *gin.Context) {
 //	rows, err := db.Query("SELECT * FROM books")
