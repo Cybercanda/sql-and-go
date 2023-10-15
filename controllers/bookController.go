@@ -94,6 +94,34 @@ func GetBook(ctx *gin.Context) {
 	})
 }
 
+// Mengambil buku dari ID
+func GetBookById(ctx *gin.Context) {
+	id := ctx.Param("bookID")
+	var book Book
+
+	err := db.QueryRow("SELECT * FROM books WHERE id = $1", id).
+		Scan(&book.ID, &book.Title, &book.Author, &book.Description)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": "Book not found",
+			})
+			return
+		} else {
+			log.Fatal(err)
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Internal Server Error",
+			})
+			return
+		}
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"book": book,
+	})
+}
+
 // Mengambil semua buku
 //func getBooks(c *gin.Context) {
 //	rows, err := db.Query("SELECT * FROM books")
